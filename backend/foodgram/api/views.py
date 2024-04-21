@@ -26,7 +26,7 @@ class RecipeView(ModelViewSet):
     pagination_class = RecipePogination
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
-    permission_classes = [IsAuthorOrReadOnlyPermission,]
+    permission_classes = [IsAuthorOrReadOnlyPermission, ]
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -71,7 +71,7 @@ class RecipeView(ModelViewSet):
     @action(
         detail=False,
         methods=['GET'],
-        permission_classes=[IsAuthenticated,]
+        permission_classes=[IsAuthenticated, ]
     )
     def download_shopping_cart(self, request):
         shopping_list = IngredientRecipe.objects.filter(
@@ -94,7 +94,7 @@ class RecipeView(ModelViewSet):
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated,]
+        permission_classes=[IsAuthenticated, ]
     )
     def favorite(self, request, pk):
         user = request.user
@@ -105,7 +105,7 @@ class RecipeView(ModelViewSet):
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated,]
+        permission_classes=[IsAuthenticated, ]
     )
     def shopping_cart(self, request, pk):
         user = request.user

@@ -17,7 +17,7 @@ class UserViewSet(DjoserUserViewSet):
         detail=False,
         methods=['GET'],
         pagination_class=RecipePogination,
-        permission_classes=[IsAuthenticated,]
+        permission_classes=[IsAuthenticated, ]
     )
     def subscriptions(self, request):
         users = Follow.objects.filter(following=request.user)
@@ -32,7 +32,7 @@ class UserViewSet(DjoserUserViewSet):
     @action(
         detail=True,
         methods=['POST'],
-        permission_classes=[IsAuthenticated,]
+        permission_classes=[IsAuthenticated, ]
     )
     def subscribe(self, request, id):
         user = get_object_or_404(User, id=id)
