@@ -138,7 +138,7 @@ class RecipeSerializerRecord(serializers.ModelSerializer):
                 ingredient=Ingredient.objects.get(id=ingredient['id']),
                 recipe=recipe,
                 amount=ingredient['amount']
-                )for ingredient in ingredients]
+            )for ingredient in ingredients]
         IngredientRecipe.objects.bulk_create(all_ingredients)
 
     def decode_design_image(self, data):
