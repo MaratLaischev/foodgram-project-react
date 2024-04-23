@@ -140,7 +140,7 @@ class RecipeSerializerRecord(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Вы не выбрали теги'
             )
-        elif ingredients is None or not ingredients[0]:
+        if ingredients is None or not ingredients[0]:
             raise serializers.ValidationError(
                 'Вы не выбрали ингредиенты'
             )
