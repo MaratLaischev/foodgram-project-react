@@ -4,14 +4,28 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
-                                   HTTP_400_BAD_REQUEST)
+                                   HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED)
 
 from api.pogination import RecipePogination
 from api.serializers import SubscriptionSerializer
 from user.models import Follow, User
+from api.serializers import UserSerializer
 
 
 class UserViewSet(DjoserUserViewSet):
+    pagination_class = RecipePogination
+
+    @action(['get'], detail=False)
+    def me(self, request, *args, **kwargs):
+        user = request.user
+        if user.is_anonymous:
+            return Response(
+                {"detail": "Учетные данные не были предоставлены."},
+                status=HTTP_401_UNAUTHORIZED
+            )
+        context = {'request': request}
+        serializer = UserSerializer(user, context=context)
+        return Response(serializer.data)
 
     @action(
         detail=False,
