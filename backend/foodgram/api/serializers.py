@@ -3,13 +3,13 @@ import io
 
 from djoser.serializers import UserCreateSerializer
 from drf_extra_fields.fields import Base64ImageField
-from ingredient.models import Ingredient, IngredientRecipe
 from PIL import Image
-from recipe.models import Cart, Favorite, Recipe, Tag, User
 from rest_framework import serializers
-from user.models import Follow
 
 from foodgram.settings import RECIPES_LIMIT_DEFOLT
+from ingredient.models import Ingredient, IngredientRecipe
+from recipe.models import Cart, Favorite, Recipe, Tag, User
+from user.models import Follow
 
 
 class UserRegistrationSerializer(UserCreateSerializer):
