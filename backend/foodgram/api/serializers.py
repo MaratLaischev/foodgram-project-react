@@ -5,8 +5,8 @@ from djoser.serializers import UserCreateSerializer
 from drf_extra_fields.fields import Base64ImageField
 from PIL import Image
 from rest_framework import serializers
+from django.conf import settings
 
-from foodgram.settings import RECIPES_LIMIT_DEFOLT
 from ingredient.models import Ingredient, IngredientRecipe
 from recipe.models import Cart, Favorite, Recipe, Tag, User
 from user.models import Follow
@@ -17,6 +17,13 @@ class UserRegistrationSerializer(UserCreateSerializer):
         model = User
         fields = ('email', 'id', 'username', 'first_name',
                   'last_name', 'password')
+
+    def validate(self, data):
+        if data.get('username') == 'me':
+            raise serializers.ValidationError(
+                    'Не используйте me в username'
+                )
+        return data
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -29,9 +36,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
-        if user.is_anonymous:
-            return False
-        return Follow.objects.filter(user=obj.id, following=user.id).exists()
+        # if user.is_authenticated:
+        #     return False
+        return obj.following.filter(
+            following=user.id
+        ).exists() and user.is_authenticated
+        # Follow.objects.filter(user=obj.id, following=user.id).exists()
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -41,18 +51,20 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit'
+    )
 
     class Meta:
         model = IngredientRecipe
-        fields = ('id', 'amount')
+        fields = ('id', 'name', 'amount', 'measurement_unit')
 
-    def to_representation(self, instance):
-        serializers = super(
-            IngredientRecipeSerializer, self
-        ).to_representation(instance)
-        serializers['name'] = instance.ingredient.name
-        serializers['measurement_unit'] = instance.ingredient.measurement_unit
-        return serializers
+    # def to_representation(self, instance):
+    #     serializers = super().to_representation(instance)
+    #     serializers['name'] = instance.ingredient.name
+    #     serializers['measurement_unit'] = instance.ingredient.measurement_unit
+    #     return serializers
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -63,7 +75,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializerRead(serializers.ModelSerializer):
-    ingredients = serializers.SerializerMethodField()
+    ingredients = serializers.SerializerMethodField(read_only=True)
     tags = TagSerializer(many=True)
     author = UserSerializer()
     cooking_time = serializers.IntegerField(min_value=1)
@@ -136,14 +148,21 @@ class RecipeSerializerRecord(serializers.ModelSerializer):
     def validate(self, data):
         ingredients = self.initial_data.get('ingredients')
         tags = self.initial_data.get('tags')
+        print(ingredients)
+        print(ingredients is None)
         if tags is None or not tags:
             raise serializers.ValidationError(
                 'Вы не выбрали теги'
             )
-        if ingredients is None or not ingredients[0]:
+        if ingredients is None or not ingredients:
             raise serializers.ValidationError(
                 'Вы не выбрали ингредиенты'
             )
+        for ingredient in ingredients:
+            if not IngredientRecipeSerializer(data=ingredient).is_valid():
+                raise serializers.ValidationError(
+                    'Игредиент пуст'
+                )
         ingredients_list = [ingredient['id'] for ingredient in ingredients]
         if len(ingredients_list) != len(set(ingredients_list)):
             raise serializers.ValidationError(
@@ -223,7 +242,7 @@ class SubscriptionSerializer(UserSerializer):
         request = self.context.get('request')
         recipes_limit = request.query_params.get('recipes_limit')
         if recipes_limit is None:
-            recipes_limit = RECIPES_LIMIT_DEFOLT
+            recipes_limit = settings.RECIPES_LIMIT_DEFOLT
         recipe = Recipe.objects.filter(author=obj)[:int(recipes_limit)]
         serializers = RecipeSerializer(list(recipe), many=True)
         return serializers.data

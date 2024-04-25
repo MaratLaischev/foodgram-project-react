@@ -1,18 +1,19 @@
 import django_filters
 
 from ingredient.models import Ingredient
-from recipe.models import Recipe, Tag, User
+from recipe.models import Recipe
 
 
 class RecipeFilter(django_filters.FilterSet):
-    is_favorited = django_filters.NumberFilter(method='get_favorite')
-    is_in_shopping_cart = django_filters.NumberFilter(method='get_cart')
-    tags = django_filters.ModelMultipleChoiceFilter(
-        field_name='tags__slug',
-        to_field_name='slug',
-        queryset=Tag.objects.all(),
-    )
-    author = django_filters.ModelChoiceFilter(queryset=User.objects.all())
+    is_favorited = django_filters.BooleanFilter(method='get_favorite')
+    is_in_shopping_cart = django_filters.BooleanFilter(method='get_cart')
+    tags = django_filters.AllValuesMultipleFilter(field_name='tags__slug')
+    # tags = django_filters.ModelMultipleChoiceFilter(
+    #     field_name='tags__slug',
+    #     to_field_name='slug',
+    #     queryset=Tag.objects.all(),
+    # )
+    # author = django_filters.ModelChoiceFilter(queryset=User.objects.all())
 
     class Meta:
         model = Recipe
@@ -20,13 +21,13 @@ class RecipeFilter(django_filters.FilterSet):
 
     def get_favorite(self, queryset, name, value):
         user = self.request.user
-        if value == 1 and user.is_authenticated:
-            return queryset.filter(favorite__author=user)
+        if value and user.is_authenticated:
+            return queryset.filter(favorites__author=user)
         return queryset
 
     def get_cart(self, queryset, name, value):
         user = self.request.user
-        if value == 1 and user.is_authenticated:
+        if value and user.is_authenticated:
             return queryset.filter(cart__author=user)
         return queryset
 
