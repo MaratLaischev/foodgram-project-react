@@ -15,8 +15,8 @@ class UserRegistrationSerializer(UserCreateSerializer):
     def validate(self, data):
         if data.get('username') == 'me':
             raise serializers.ValidationError(
-                    'Не используйте me в username'
-                )
+                'Не используйте me в username'
+            )
         return data
 
 
