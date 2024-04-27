@@ -2,7 +2,6 @@ from io import BytesIO
 
 from django.db.models import Sum
 from django.http import FileResponse
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
@@ -14,11 +13,11 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import IsAuthorOrReadOnlyPermission
 from api.pogination import RecipePogination
-from api.serializers import (IngredientSerializer, RecipeSerializer,
-                             RecipeSerializerRead, RecipeSerializerRecord,
-                             TagSerializer)
-from ingredient.models import Ingredient, IngredientRecipe
-from recipe.models import Cart, Favorite, Recipe, Tag
+from api.serializers import (CartSerializer, FavoriteSerializer,
+                             IngredientSerializer, RecipeSerializerRead,
+                             RecipeSerializerRecord, TagSerializer)
+from ingredient.models import Ingredient
+from recipe.models import Cart, Favorite, IngredientRecipe, Recipe, Tag
 
 
 class RecipeView(ModelViewSet):
@@ -33,18 +32,10 @@ class RecipeView(ModelViewSet):
             return RecipeSerializerRead
         return RecipeSerializerRecord
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-
-    def adding_method(self, model, user, pk):
-        if model.objects.filter(author=user, recipe__id=pk).exists():
-            return Response(
-                {'error': 'Рецепт уже добавлен!'},
-                status=HTTP_400_BAD_REQUEST
-            )
-        recipe = get_object_or_404(Recipe, id=pk)
-        model.objects.create(author=user, recipe=recipe)
-        serializer = RecipeSerializer(recipe)
+    def adding_method(self, serializer, context):
+        serializer = serializer(data=context['request'].data, context=context)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=HTTP_201_CREATED)
 
     def delete_method(self, model, user, pk):
@@ -75,7 +66,7 @@ class RecipeView(ModelViewSet):
     )
     def download_shopping_cart(self, request):
         shopping_list = IngredientRecipe.objects.filter(
-            recipe__cart__author=request.user
+            recipe__carts__author=request.user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
@@ -98,8 +89,9 @@ class RecipeView(ModelViewSet):
     )
     def favorite(self, request, pk):
         user = request.user
+        context = {'request': request, 'pk': pk}
         if request.method == 'POST':
-            return self.adding_method(Favorite, user, pk)
+            return self.adding_method(FavoriteSerializer, context)
         return self.delete_method(Favorite, user, pk)
 
     @action(
@@ -109,8 +101,9 @@ class RecipeView(ModelViewSet):
     )
     def shopping_cart(self, request, pk):
         user = request.user
+        context = {'request': request, 'pk': pk}
         if request.method == 'POST':
-            return self.adding_method(Cart, user, pk)
+            return self.adding_method(CartSerializer, context)
         return self.delete_method(Cart, user, pk)
 
 

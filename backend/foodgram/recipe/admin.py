@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from ingredient.models import IngredientRecipe
-from recipe.models import Cart, Favorite, Recipe, Tag
+from recipe.models import Cart, Favorite, IngredientRecipe, Recipe, Tag
 
 
 class FavoriteInline(admin.TabularInline):
@@ -21,8 +20,10 @@ class CartInline(admin.TabularInline):
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipe
     extra = 0
+    min_num = 1
 
 
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (
         IngredientRecipeInline,
@@ -56,6 +57,7 @@ class RecipeAdmin(admin.ModelAdmin):
         return 'Нет картинки'
 
 
+@admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = (
         'id',
@@ -64,6 +66,7 @@ class FavoriteAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'color', 'slug')
     search_fields = ('name', 'color', 'slug')
@@ -72,14 +75,9 @@ class TagAdmin(admin.ModelAdmin):
     empty_value_display = 'Не задано'
 
 
+@admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     list_display = ('id', 'author', 'recipe')
-    search_fields = ('author', 'recipe',)
+    search_fields = ('author__username', 'recipe__name',)
     list_filter = ('author', 'recipe',)
     empty_value_display = 'Не задано'
-
-
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Cart, CartAdmin)
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(Favorite, FavoriteAdmin)

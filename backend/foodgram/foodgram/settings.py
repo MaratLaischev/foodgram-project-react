@@ -21,13 +21,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'colorfield',
     'djoser',
-    'api.apps.ApiConfig',
-    'recipe.apps.RecipeConfig',
-    'ingredient.apps.IngredientConfig',
-    'user.apps.UserConfig',
     'debug_toolbar',
     'django_filters',
+    'api.apps.ApiConfig',
+    'ingredient.apps.IngredientConfig',
+    'recipe.apps.RecipeConfig',
+    'user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -136,14 +137,12 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
     'SERIALIZERS': {
-        'user_create': 'api.serializers.UserRegistrationSerializer',
-        'user': 'api.serializers.UserSerializer',
-        'current_user': 'api.serializers.UserSerializer',
+        'user_create': 'user.serializers.UserRegistrationSerializer',
+        'user': 'user.serializers.UserSerializer',
+        'current_user': 'user.serializers.UserSerializer',
     },
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
-        'user_list': ['rest_framework.permissions.AllowAny'],
+        'user_list': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
     },
 }
-DEFAULT_PAGE_SIZE_POGINATION = 5
-RECIPES_LIMIT_DEFOLT = 1

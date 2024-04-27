@@ -4,24 +4,20 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
-                                   HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED)
+                                   HTTP_400_BAD_REQUEST)
 
 from api.pogination import RecipePogination
-from api.serializers import SubscriptionSerializer, UserSerializer
 from user.models import Follow, User
+from user.serializers import (FollowSerializer, SubscriptionSerializer,
+                              UserSerializer)
 
 
 class UserViewSet(DjoserUserViewSet):
     pagination_class = RecipePogination
 
-    @action(['get'], detail=False)
+    @action(['get'], detail=False, permission_classes=[IsAuthenticated, ])
     def me(self, request, *args, **kwargs):
         user = request.user
-        if user.is_anonymous:
-            return Response(
-                {"detail": "Учетные данные не были предоставлены."},
-                status=HTTP_401_UNAUTHORIZED
-            )
         context = {'request': request}
         serializer = UserSerializer(user, context=context)
         return Response(serializer.data)
@@ -48,15 +44,12 @@ class UserViewSet(DjoserUserViewSet):
         permission_classes=[IsAuthenticated, ]
     )
     def subscribe(self, request, id):
-        user = get_object_or_404(User, id=id)
-        if Follow.objects.filter(user=user, following=request.user).exists():
-            return Response(
-                {'error': 'Вы уже подписаны!'},
-                status=HTTP_400_BAD_REQUEST
-            )
-        Follow.objects.create(user=user, following=request.user)
-        context = {'request': request}
-        serializer = SubscriptionSerializer(user, context=context)
+        context = {'request': request, 'pk': id}
+        serializer = FollowSerializer(
+            data=context['request'].data, context=context
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=HTTP_201_CREATED)
 
     @subscribe.mapping.delete
