@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
@@ -67,12 +66,11 @@ class SubscriptionSerializer(UserSerializer):
         recipes = obj.recipes.all()
         request = self.context.get('request')
         recipes_limit = request.query_params.get('recipes_limit')
-        try:
+        if recipes_limit and recipes_limit.isdigit():
             return UserRecipeSerializer(
                 recipes[:int(recipes_limit)], many=True
             ).data
-        except (TypeError, ValueError):
-            return UserRecipeSerializer(recipes, many=True).data
+        return UserRecipeSerializer(recipes, many=True).data
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
@@ -82,7 +80,8 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = (
-            'id',
+            'user',
+            'following'
         )
 
     def to_representation(self, follow):
@@ -90,25 +89,19 @@ class FollowSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def validate(self, data):
-        follower = self.context['request'].user
+        follower = data['following']
         pk = self.context['pk']
-        user = User.objects.filter(id=pk)
-        if not user.exists():
+        user = data['user']
+        if not user:
             raise serializers.ValidationError(
                 f'Пользователя с id {pk} не существует!'
             )
-        if follower.followers.filter(user__id=pk).exists():
+        if follower.followers.filter(user=user).exists():
             raise serializers.ValidationError(
-                f'Вы уже подписаны на {user[0].username}'
+                f'Вы уже подписаны на {user.username}'
             )
-        if user[0] == follower:
+        if user == follower:
             raise serializers.ValidationError(
                 'Вы не можете подписаться на себя'
             )
         return data
-
-    def create(self, validated_data):
-        follower = self.context['request'].user
-        pk = self.context['pk']
-        user = get_object_or_404(User, id=pk)
-        return follower.followers.create(user=user)

@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from foodgram import constants
@@ -17,6 +18,19 @@ class User(AbstractUser):
     last_name = models.CharField(
         'Фамилия', max_length=constants.MAX_LENGTH_USER, unique=True
     )
+
+    class Meta:
+        ordering = ['username']
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.username[:constants.RESTRICTION_STRING]
+
+    def clean(self):
+        if self.username == 'me':
+            raise ValidationError(
+                {'username': 'me запрещен в username'})
 
 
 class Follow(models.Model):

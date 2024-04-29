@@ -45,8 +45,9 @@ class UserViewSet(DjoserUserViewSet):
     )
     def subscribe(self, request, id):
         context = {'request': request, 'pk': id}
+        data = {'user': id, 'following': request.user.id}
         serializer = FollowSerializer(
-            data=context['request'].data, context=context
+            data=data, context=context
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()

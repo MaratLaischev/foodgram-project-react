@@ -1,7 +1,6 @@
 import base64
 import io
 
-from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from PIL import Image
 from rest_framework import serializers
@@ -114,10 +113,7 @@ class RecipeSerializerRecord(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Вы не выбрали теги'
             )
-        tags_list = []
-        for tag in tags:
-            tags_list.append(tag.id)
-        if len(tags_list) != len(set(tags_list)):
+        if len(tags) != len(set(tags)):
             raise serializers.ValidationError(
                 'Проверьте, какой-то тег был выбран более 1 раза'
             )
@@ -125,13 +121,9 @@ class RecipeSerializerRecord(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Вы не выбрали ингредиенты'
             )
-        ingredients_list = []
-        for ingredient in ingredients:
-            if not IngredientRecipeSerializer(data=ingredient).is_valid():
-                raise serializers.ValidationError(
-                    'Игредиент пуст'
-                )
-            ingredients_list.append(ingredient['ingredient'].id)
+        ingredients_list = [
+            ingredient['ingredient'].id for ingredient in ingredients
+        ]
         if len(ingredients_list) != len(set(ingredients_list)):
             raise serializers.ValidationError(
                 'Проверьте, какой-то ингредиент был выбран более 1 раза'
@@ -183,53 +175,43 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = (
-            'id',
+            'author',
+            'recipe'
         )
 
     def to_representation(self, cart):
         recipe = cart.recipe
-        serializers = UserRecipeSerializer(recipe)
+        serializers = UserRecipeSerializer(recipe, context=self.context)
         return serializers.data
 
     def validate(self, data):
-        user = self.context['request'].user
-        pk = self.context['pk']
-        if user.carts.filter(recipe__id=pk).exists():
+        user = data.get('author')
+        recipe = data.get('recipe')
+        if user.carts.filter(recipe=recipe).exists():
             raise serializers.ValidationError(
                 'Рецепт уже добавлен!'
             )
         return data
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        pk = self.context['pk']
-        recipe = get_object_or_404(Recipe, id=pk)
-        return user.carts.create(recipe=recipe)
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
         fields = (
-            'id',
+            'author',
+            'recipe'
         )
 
     def to_representation(self, favorite):
         recipe = favorite.recipe
-        serializers = UserRecipeSerializer(recipe)
+        serializers = UserRecipeSerializer(recipe, context=self.context)
         return serializers.data
 
     def validate(self, data):
-        user = self.context['request'].user
-        pk = self.context['pk']
-        if user.favorites.filter(recipe__id=pk).exists():
+        user = data.get('author')
+        recipe = data.get('recipe')
+        if user.favorites.filter(recipe=recipe).exists():
             raise serializers.ValidationError(
                 'Рецепт уже добавлен!'
             )
         return data
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        pk = self.context['pk']
-        recipe = get_object_or_404(Recipe, id=pk)
-        return user.favorites.create(recipe=recipe)

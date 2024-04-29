@@ -1,17 +1,28 @@
 from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
+from random import randint
 
 from foodgram import constants
 from ingredient.models import Ingredient
 from user.models import User
 
 
+def default_color():
+    color_1 = format(randint(16, 255), 'X')
+    color_2 = format(randint(16, 255), 'X')
+    color_3 = format(randint(16, 255), 'X')
+    return f'#{color_1}{color_2}{color_3}'
+
+
 class Tag(models.Model):
     name = models.CharField(
         'Название', max_length=constants.MAX_LENGTH, unique=True
     )
-    color = ColorField(default=constants.default_color)
+    color = ColorField(
+        'Цвет', default=default_color,
+        unique=True, max_length=constants.MAX_LENGTH_COLOR
+    )
     slug = models.SlugField(
         'Уникальный слаг', max_length=constants.MAX_LENGTH, unique=True
     )
@@ -75,8 +86,11 @@ class IngredientRecipe(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
         validators=(MinValueValidator(
-            constants.MINIMUM_COOKING_TIME,
-            message='Минимальное количество ингредиентов 1'),
+            constants.MINIMUM_AMOUNT_INGREDIENTS,
+            message=(
+                'Минимальное количество ингредиентов'
+                f'{constants.MINIMUM_AMOUNT_INGREDIENTS}'
+            )),
         )
     )
 
@@ -101,7 +115,7 @@ class Cart(models.Model):
     class Meta:
         ordering = ['author']
         default_related_name = 'carts'
-        verbose_name = 'карзину'
+        verbose_name = 'корзину'
         verbose_name_plural = 'Список карзин'
         constraints = [
             models.UniqueConstraint(fields=['author', 'recipe'],

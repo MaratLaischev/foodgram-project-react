@@ -25,7 +25,7 @@ class RecipeView(ModelViewSet):
     pagination_class = RecipePogination
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
-    permission_classes = [IsAuthorOrReadOnlyPermission, ]
+    permission_classes = [IsAuthorOrReadOnlyPermission]
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -33,7 +33,9 @@ class RecipeView(ModelViewSet):
         return RecipeSerializerRecord
 
     def adding_method(self, serializer, context):
-        serializer = serializer(data=context['request'].data, context=context)
+        user = context['request'].user
+        data = {'author': user.id, 'recipe': context['pk']}
+        serializer = serializer(data=data, context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=HTTP_201_CREATED)
