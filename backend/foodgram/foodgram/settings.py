@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-1p($tcpn0@-lz1^!1ni0kl$*m61_^n3i78bm27^8_r3w&+i$=x
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['158.160.65.47','127.0.0.1','backend']
 
 AUTH_USER_MODEL = "user.User"
 
