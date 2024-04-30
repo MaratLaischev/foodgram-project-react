@@ -1,7 +1,8 @@
+from random import randint
+
 from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
-from random import randint
 
 from foodgram import constants
 from ingredient.models import Ingredient
