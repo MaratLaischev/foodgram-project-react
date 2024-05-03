@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-1p($tcpn0@-lz1^!1ni0kl$*m61_^n3i78bm27^8_r3w&+i$=x
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['158.160.65.47','127.0.0.1','backend']
+ALLOWED_HOSTS = ['158.160.65.47', '127.0.0.1', 'backend', 'localhost']
 
 AUTH_USER_MODEL = "user.User"
 
@@ -68,16 +68,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('POSTGRES_DB', 'django'),
+#         'USER': os.getenv('POSTGRES_USER', 'django_user'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'mysecretpassword'),
+#         'HOST': os.getenv('DB_HOST', 'db'),
+#         'PORT': os.getenv('DB_PORT', 5432)
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
