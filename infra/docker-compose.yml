@@ -8,24 +8,23 @@ volumes:
 
 services:
   db:
-    image: postgres:13
     env_file: ../.env
+    image: postgres:13.2
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   backend:
 #    image: maratlaischev/foodgram_backend
 #    restart: always
+#    env_file: ../.env
     build:
-      context: ../backend/foodgram/
+      context: ../backend/
       dockerfile: Dockerfile
     depends_on:
       - db
     volumes:
       - static_value:/app/backend_static/
       - media_value:/app/backend_media/
-    env_file:
-      - ../.env
 
   frontend:
 #    image: maratlaischev/foodgram_frontend

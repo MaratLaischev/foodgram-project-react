@@ -87,7 +87,7 @@ class RecipeSerializerRecord(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all(), required=True
     )
-    image = Base64ImageField(max_length=None, required=True)
+    image = Base64ImageField(max_length=None)
 
     class Meta:
         model = Recipe
@@ -105,7 +105,7 @@ class RecipeSerializerRecord(serializers.ModelSerializer):
         ingredients = data.get('ingredients')
         tags = data.get('tags')
         image = data.get('image')
-        if not image:
+        if not image and not self.context.get('request').method == 'PATCH':
             raise serializers.ValidationError(
                 'Вы не выбрали картинку'
             )
