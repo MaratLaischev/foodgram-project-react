@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -83,12 +83,12 @@ DATABASES = {
     }
 }
 
-#DATABASES = {
+# DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
 #        'NAME': BASE_DIR / 'db.sqlite3',
 #    }
-#}
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -152,4 +152,4 @@ DJOSER = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS=["http://158.160.65.47"]
+CSRF_TRUSTED_ORIGINS = ["http://158.160.65.47"]
