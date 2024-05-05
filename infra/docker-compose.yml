@@ -14,11 +14,11 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-#    image: maratlaischev/foodgram_backend
-#    restart: always
-    build:
-      context: ../backend/foodgram/
-      dockerfile: Dockerfile
+   image: maratlaischev/foodgram_backend
+   restart: always
+    # build:
+    #   context: ../backend/foodgram/
+    #   dockerfile: Dockerfile
     depends_on:
       - db
     volumes:
@@ -28,11 +28,11 @@ services:
       - ../.env
 
   frontend:
-#    image: maratlaischev/foodgram_frontend
-#    restart: always
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+   image: maratlaischev/foodgram_frontend
+   restart: always
+    # build:
+    #   context: ../frontend
+    #   dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
