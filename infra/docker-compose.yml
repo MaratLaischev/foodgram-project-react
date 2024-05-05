@@ -12,10 +12,10 @@ services:
     env_file: ../.env
     volumes:
       - pg_data:/var/lib/postgresql/data
-
+  
   backend:
-   image: maratlaischev/foodgram_backend
-   restart: always
+    image: maratlaischev/foodgram_backend
+    restart: always
     # build:
     #   context: ../backend/foodgram/
     #   dockerfile: Dockerfile
@@ -28,8 +28,8 @@ services:
       - ../.env
 
   frontend:
-   image: maratlaischev/foodgram_frontend
-   restart: always
+    image: maratlaischev/foodgram_frontend
+    restart: always
     # build:
     #   context: ../frontend
     #   dockerfile: Dockerfile
