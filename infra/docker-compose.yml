@@ -16,9 +16,6 @@ services:
   backend:
     image: maratlaischev/foodgram_backend
     restart: always
-    # build:
-    #   context: ../backend/foodgram/
-    #   dockerfile: Dockerfile
     depends_on:
       - db
     volumes:
@@ -28,9 +25,6 @@ services:
   frontend:
     image: maratlaischev/foodgram_frontend
     restart: always
-    # build:
-    #   context: ../frontend
-    #   dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
