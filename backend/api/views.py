@@ -12,7 +12,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import IsAuthorOrReadOnlyPermission
-from api.pogination import RecipePogination
+from api.poginator import RecipePaginator
 from api.serializers import (CartSerializer, FavoriteSerializer,
                              IngredientSerializer, RecipeSerializerRead,
                              RecipeSerializerRecord, TagSerializer)
@@ -22,7 +22,7 @@ from recipe.models import Cart, Favorite, IngredientRecipe, Recipe, Tag
 
 class RecipeView(ModelViewSet):
     queryset = Recipe.objects.prefetch_related('tags', 'author')
-    pagination_class = RecipePogination
+    pagination_class = RecipePaginator
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
     permission_classes = [IsAuthorOrReadOnlyPermission]

@@ -6,14 +6,14 @@ from rest_framework.response import Response
 from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
                                    HTTP_400_BAD_REQUEST)
 
-from api.pogination import RecipePogination
+from api.poginator import RecipePaginator
 from user.models import Follow, User
 from user.serializers import (FollowSerializer, SubscriptionSerializer,
                               UserSerializer)
 
 
 class UserViewSet(DjoserUserViewSet):
-    pagination_class = RecipePogination
+    pagination_class = RecipePaginator
 
     @action(['get'], detail=False, permission_classes=[IsAuthenticated, ])
     def me(self, request, *args, **kwargs):
@@ -25,7 +25,7 @@ class UserViewSet(DjoserUserViewSet):
     @action(
         detail=False,
         methods=['GET'],
-        pagination_class=RecipePogination,
+        pagination_class=RecipePaginator,
         permission_classes=[IsAuthenticated, ]
     )
     def subscriptions(self, request):
