@@ -4,8 +4,8 @@ from django.db import models
 
 from foodgram import constants
 from ingredient.models import Ingredient
-from user.models import User
 from recipe.utils import default_color
+from user.models import User
 
 
 class Tag(models.Model):
