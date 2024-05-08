@@ -1,5 +1,3 @@
-from random import randint
-
 from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -7,13 +5,7 @@ from django.db import models
 from foodgram import constants
 from ingredient.models import Ingredient
 from user.models import User
-
-
-def default_color():
-    color_1 = format(randint(16, 255), 'X')
-    color_2 = format(randint(16, 255), 'X')
-    color_3 = format(randint(16, 255), 'X')
-    return f'#{color_1}{color_2}{color_3}'
+from recipe.utils import default_color
 
 
 class Tag(models.Model):
@@ -120,7 +112,7 @@ class Cart(models.Model):
         verbose_name_plural = 'Список карзин'
         constraints = [
             models.UniqueConstraint(fields=['author', 'recipe'],
-                                    name='unique_author_recipe')
+                                    name='unique_cart_author_recipe')
         ]
 
     def __str__(self):
@@ -136,6 +128,10 @@ class Favorite(models.Model):
         default_related_name = 'favorites'
         verbose_name = 'избранное'
         verbose_name_plural = 'Избранное'
+        constraints = [
+            models.UniqueConstraint(fields=['author', 'recipe'],
+                                    name='unique_favorite_recipe')
+        ]
 
     def __str__(self):
         return f'Рецепт {self.recipe} в избранном у {self.author}'

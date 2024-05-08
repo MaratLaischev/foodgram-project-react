@@ -67,10 +67,10 @@ class SubscriptionSerializer(UserSerializer):
         request = self.context.get('request')
         recipes_limit = request.query_params.get('recipes_limit')
         if recipes_limit and recipes_limit.isdigit():
-            return UserRecipeSerializer(
-                recipes[:int(recipes_limit)], many=True
-            ).data
-        return UserRecipeSerializer(recipes, many=True).data
+            recipes = recipes[:int(recipes_limit)]
+        return UserRecipeSerializer(
+            recipes, many=True, context=self.context
+        ).data
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
