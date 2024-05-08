@@ -1,5 +1,6 @@
+[![Main foodgram workflow](https://github.com/MaratLaischev/foodgram-project-react/actions/workflows/foodgram_workflows.yml/badge.svg)](https://github.com/MaratLaischev/foodgram-project-react/actions/workflows/foodgram_workflows.yml)
 
-## Foodgram
+## [Foodgram](http://158.160.65.47/recipes)
 
 Foodgram — сайт, на котором пользователи могут опубликовать свои рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. 
 Пользователям сайта также будет доступен сервис «Список покупок». Он позволит создавать список продуктов, которые нужно купить для приготовления выбранных блюд. Также есть возможность скачивания данного списка в формате txt.
@@ -59,6 +60,56 @@ Foodgram — сайт, на котором пользователи могут �
 Такой же принцип соблюдается при фильтрации списка избранного.
 
 
+### Локальный запуск проекта
+Клонируейте репозиторий с проектом:
+```bash
+git clone https://github.com/MaratLaischev/foodgram-project-react.git && cd foodgram-project-react
+```
+
+Создайте виртуальное окружение
+
+```bash
+python -m venv .venv
+```
+
+Активируйте виртуальное окружение
+
+```bash
+source .venv/bin/activate
+```
+
+Установите библиотеки python
+
+```bash
+pip install --upgrade pip && pip install -r requirements.txt
+```
+
+Выполните миграцию базы данных
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+Создайте суперпользователя
+
+```bash
+python manage.py createsuperuser
+```
+
+Заполните базу данных
+
+```bash
+python manage.py importcsv --filename ingredients.csv --model_name ingredient --app_name ingredient
+```
+
+Запустите проект
+
+```bash
+python manage.py runserver
+```
+
+
 ## Документация
 Документация сделана с использованием Redoc на основе описания OpenAPI.
 
@@ -102,6 +153,16 @@ Foodgram — сайт, на котором пользователи могут �
 "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
 "cooking_time": 1
 }
+```
+Создайте файл переменных `.env`
+```bash
+DJANGO_SECRET_KEY=Секретный_ключ
+DJANGO_ALLOWED_HOSTS=127.0.0.1,locahost
+POSTGRES_USER=django_user
+POSTGRES_PASSWORD=Пароль
+POSTGRES_DB=django
+DB_HOST=db
+DB_PORT=5432
 ```
 
 ## Технологии
