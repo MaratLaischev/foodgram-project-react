@@ -1,17 +1,18 @@
 import os
 from pathlib import Path
 
+from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-1p($tcpn0@-lz1^!1ni0kl$*m61_^n3i78bm27^8_r3w&+i$=x'
+SECRET_KEY = os.getenv('SECRET_KEY', default=get_random_secret_key())
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', default='True').lower() == 'true'
 
-ALLOWED_HOSTS = ['158.160.65.47', '127.0.0.1', 'backend', 'localhost']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='127.0.0.1 localhost').split()
 
 AUTH_USER_MODEL = "user.User"
 
@@ -82,13 +83,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', 5432)
     }
 }
-
-# DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
