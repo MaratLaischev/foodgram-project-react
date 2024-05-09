@@ -113,9 +113,9 @@ jobs:
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
           cd foodgram/infra/
-          sudo docker compose -f docker-compose.yml pull
-          sudo docker compose -f docker-compose.yml down
-          sudo docker compose -f docker-compose.yml up -d
+          sudo docker compose -f docker-compose.yml pull backend
+          sudo docker compose -f docker-compose.yml down backend
+          sudo docker compose -f docker-compose.yml up -d backend
           sudo docker compose -f docker-compose.yml exec backend python manage.py makemigrations
           sudo docker compose -f docker-compose.yml exec backend python manage.py migrate
 
