@@ -1,6 +1,6 @@
 [![Main foodgram workflow](https://github.com/MaratLaischev/foodgram-project-react/actions/workflows/foodgram_workflows.yml/badge.svg)](https://github.com/MaratLaischev/foodgram-project-react/actions/workflows/foodgram_workflows.yml)
 
-## [Foodgram](http://158.160.65.47/recipes)
+## [Foodgram](http://158.160.65.47/recipes) 
 
 Foodgram — сайт, на котором пользователи могут опубликовать свои рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. 
 Пользователям сайта также будет доступен сервис «Список покупок». Он позволит создавать список продуктов, которые нужно купить для приготовления выбранных блюд. Также есть возможность скачивания данного списка в формате txt.
