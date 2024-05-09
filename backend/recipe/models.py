@@ -34,7 +34,7 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE, verbose_name='Автор',
     )
     name = models.CharField('Название', max_length=constants.MAX_LENGTH)
-    image = models.ImageField('Картинка', upload_to='recipe_img/', blank=True)
+    image = models.ImageField('Картинка', upload_to='recipe_img/')
     text = models.TextField('Описание')
     tags = models.ManyToManyField(Tag, verbose_name='Теги')
     ingredients = models.ManyToManyField(
