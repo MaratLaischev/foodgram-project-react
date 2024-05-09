@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
                                    HTTP_400_BAD_REQUEST)
 
-from api.poginator import RecipePaginator
+from api.paginator import RecipePaginator
 from user.models import Follow, User
 from user.serializers import (FollowSerializer, SubscriptionSerializer,
                               UserSerializer)

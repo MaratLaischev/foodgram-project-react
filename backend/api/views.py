@@ -12,7 +12,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import IsAuthorOrReadOnlyPermission
-from api.poginator import RecipePaginator
+from api.paginator import RecipePaginator
 from api.serializers import (CartSerializer, FavoriteSerializer,
                              IngredientSerializer, RecipeSerializerRead,
                              RecipeSerializerRecord, TagSerializer)

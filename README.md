@@ -1,4 +1,4 @@
-[![Main foodgram workflow](https://github.com/MaratLaischev/foodgram-project-react/actions/workflows/foodgram_workflows.yml/badge.svg)](https://github.com/MaratLaischev/foodgram-project-react/actions/workflows/foodgram_workflows.yml)
+![Build Status](https://github.com/{MaratLaischev}/{foodgram-project-react}/workflows/{Main%20foodgram%20workflow}/badge.svg)](https://github.com/{MaratLaischev}/{foodgram-project-react}/actions/workflows/{foodgram_workflows}.yml)
 
 ## [Foodgram](http://158.160.65.47/recipes)
 
