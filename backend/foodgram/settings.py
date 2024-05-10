@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', default=get_random_secret_key())
 
 DEBUG = os.getenv('DEBUG', default='True').lower() == 'true'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='158.160.65.47 127.0.0.1 localhost').split()
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='127.0.0.1 localhost').split()
 
 AUTH_USER_MODEL = "user.User"
 
@@ -146,4 +146,4 @@ DJOSER = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://158.160.65.47"]
+CSRF_TRUSTED_ORIGINS = [os.getenv('CSRF_TRUSTED_ORIGINS')]
